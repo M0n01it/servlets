@@ -1,10 +1,12 @@
 package ru.netology.servlet;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.netology.config.AppConfig;
 import ru.netology.controller.PostController;
 import ru.netology.exception.NotFoundException;
-import ru.netology.repository.PostRepository;
-import ru.netology.service.PostService;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,15 +16,18 @@ import java.util.regex.Pattern;
 
 public class MainServlet extends HttpServlet {
   private PostController controller;
+  private ApplicationContext context;
 
   private static final String API_POSTS = "/api/posts";
   private static final Pattern ID_PATTERN = Pattern.compile("/api/posts/(\\d+)");
 
   @Override
-  public void init() {
-    final var repository = new PostRepository();
-    final var service = new PostService(repository);
-    controller = new PostController(service);
+  public void init() throws ServletException {
+    super.init();
+    // Инициализация Spring Context
+    context = new AnnotationConfigApplicationContext(AppConfig.class);
+    // Получение бина PostController из контекста
+    controller = context.getBean(PostController.class);
   }
 
   @Override
