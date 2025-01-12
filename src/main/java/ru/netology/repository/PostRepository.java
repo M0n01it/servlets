@@ -1,14 +1,15 @@
 package ru.netology.repository;
 
+import org.springframework.stereotype.Repository;
 import ru.netology.exception.NotFoundException;
 import ru.netology.model.Post;
-
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
-import java.util.Optional;
 
+@Repository
 public class PostRepository {
   private final ConcurrentHashMap<Long, Post> posts = new ConcurrentHashMap<>();
   private final AtomicLong idCounter = new AtomicLong(1);
@@ -28,12 +29,10 @@ public class PostRepository {
       posts.put(id, post);
       return post;
     } else {
-      // Обновление существующего поста
       if (posts.replace(post.getId(), post) != null) {
         return post;
       } else {
-        // Стратегия: если поста нет, считаем это ошибкой
-        throw new NotFoundException("Пост с id " + post.getId() + " не найден.");
+        throw new NotFoundException("Post with id " + post.getId() + " not found.");
       }
     }
   }
