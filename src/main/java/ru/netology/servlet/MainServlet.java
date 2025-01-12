@@ -24,9 +24,9 @@ public class MainServlet extends HttpServlet {
   @Override
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
-    // Initialize Spring Application Context
+
     ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-    // Retrieve PostController bean
+
     controller = context.getBean(PostController.class);
   }
 
