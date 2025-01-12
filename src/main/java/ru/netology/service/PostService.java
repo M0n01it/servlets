@@ -18,7 +18,7 @@ public class PostService {
   }
 
   public Post getById(long id) {
-    return repository.getById(id).orElseThrow(NotFoundException::new);
+    return repository.getById(id).orElseThrow(() -> new NotFoundException("Пост с id " + id + " не найден."));
   }
 
   public Post save(Post post) {
@@ -26,6 +26,9 @@ public class PostService {
   }
 
   public void removeById(long id) {
+    if (!repository.getById(id).isPresent()) {
+      throw new NotFoundException("Пост с id " + id + " не найден.");
+    }
     repository.removeById(id);
   }
 }
